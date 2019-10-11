@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Draw a blue rectangle (canvas version)</title>
+</head>
+
+<body>
+    <canvas id="webgl" width="400" height="400"></canvas>
+
+    <script>
+        window.onload = function () {
+            // 获取 canvas 元素
+            var canvas = document.getElementById("webgl");
+
+            if (!canvas) {
+                console.log("Failed to get the <canvas>");
+                return;
+            }
+
+            // 获取绘制二维图形的绘图上下文
+            var context = canvas.getContext("2d");
+
+            // 绘制蓝色矩形
+            context.fillStyle = "rgba(0, 0, 255, 1.0)"; // 设置填充颜色为蓝色
+            context.fillRect(120, 10, 150, 150); // 使用填充颜色填充矩形
+        }
+    </script>
+</body>
+
+</html>
