@@ -1,15 +1,15 @@
-var VSHADER_SOURCE =
+var VSHADER_SOURCE = 
     'attribute vec4 a_Position;' +
-    'uniform vec4 u_Translation;' +
+    'uniform mat4 u_xformMatrix;' +
     'void main(){' +
-    '   gl_Position = a_Position + u_Translation;' +
+    '   gl_Position = u_xformMatrix * a_Position;' +
     '}';
 var FSHADER_SOURCE =
     'void main(){' +
     '   gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);' +
     '}';
 
-var Tx = 0.5, Ty = 0.5, Tz = 0.0;
+var ANGLE = 90.0;
 
 function main(){
     var canvas = document.getElementById("webgl");
@@ -31,20 +31,30 @@ function main(){
         return;
     }
 
-    var u_Translation = gl.getUniformLocation(gl.program, "u_Translation");
-    if(!u_Translation){
-        console.log('获取 uniform 变量地址失败！');
+    // 创建旋转矩阵(列主序)
+    var radian = Math.PI * ANGLE / 180.0;
+    var cosB = Math.cos(radian);
+    var sinB = Math.sin(radian);
+
+    var xformMatrix = new Float32Array([
+         cosB, sinB, 0.0, 0.0,
+        -sinB, cosB, 0.0, 0.0,
+          0.0,  0.0, 1.0, 0.0,
+          0.0,  0.0, 0.0, 1.0
+    ]);
+    
+    var u_xformMatrix = gl.getUniformLocation(gl.program, 'u_xformMatrix');
+    if(!u_xformMatrix){
         return;
     }
 
-    gl.uniform4f(u_Translation, Tx, Ty, Tz, 0.0);
+    gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix);
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.drawArrays(gl.TRIANGLES, 0, n);
-
 }
 
 function initVertexBuffers(gl){

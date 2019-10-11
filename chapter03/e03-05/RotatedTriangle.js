@@ -1,15 +1,19 @@
-var VSHADER_SOURCE =
+var VSHADER_SOURCE = 
     'attribute vec4 a_Position;' +
-    'uniform vec4 u_Translation;' +
+    'uniform float u_CosB, u_SinB;' +
     'void main(){' +
-    '   gl_Position = a_Position + u_Translation;' +
+    '   gl_Position.x = a_Position.x * u_CosB - a_Position.y * u_SinB;' +
+    '   gl_Position.y = a_Position.x * u_SinB + a_Position.y * u_CosB;' +
+    '   gl_Position.z = a_Position.z;' +
+    '   gl_Position.w = a_Position.w;' +
     '}';
-var FSHADER_SOURCE =
+
+var FSHADER_SOURCE = 
     'void main(){' +
     '   gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);' +
     '}';
 
-var Tx = 0.5, Ty = 0.5, Tz = 0.0;
+var ANGLE = 90.0;
 
 function main(){
     var canvas = document.getElementById("webgl");
@@ -31,19 +35,26 @@ function main(){
         return;
     }
 
-    var u_Translation = gl.getUniformLocation(gl.program, "u_Translation");
-    if(!u_Translation){
+    var radian = Math.PI * ANGLE / 180.0;
+    var cosB = Math.cos(radian);
+    var sinB = Math.sin(radian);
+
+    var u_CosB = gl.getUniformLocation(gl.program, "u_CosB");
+    var u_SinB = gl.getUniformLocation(gl.program, "u_SinB");
+    if(!u_CosB || !u_SinB){
         console.log('获取 uniform 变量地址失败！');
         return;
     }
 
-    gl.uniform4f(u_Translation, Tx, Ty, Tz, 0.0);
+    gl.uniform1f(u_CosB, cosB);
+    gl.uniform1f(u_SinB, sinB);
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.drawArrays(gl.TRIANGLES, 0, n);
+
 
 }
 
