@@ -28,7 +28,7 @@ function main() {
 
     var n = initVertexBuffers(gl);
     if (n < 0) {
-        console.log('初始化缓冲区对象失败！');
+        console.log('初始化顶点缓冲区对象失败！');
         return;
     }
 
@@ -51,29 +51,31 @@ function main() {
     gl.drawArrays(gl.TRIANGLES, 0, n);
 }
 
+// 初始化顶点缓冲区对象(VBO)
 function initVertexBuffers(gl) {
     var vertices = new Float32Array([0.0, 0.3, -0.3, -0.3, 0.3, -0.3]);
 
     var n = 3;
 
+    // 获取 attribute 变量地址
+    var a_Position = gl.getAttribLocation(gl.program, "a_Position");
+    if (a_Position < 0) {
+        console.log('获取 attribute 变量地址失败！');
+        return -1;
+    }
+
     // 创建缓冲区对象
     var vertexBuffer = gl.createBuffer();
     if (!vertexBuffer) {
         console.log('创建缓冲区对象失败！');
-        return -1;
+        return -2;
     }
 
-    // 将缓冲区对象绑定到指定目标上
+    // 指定缓冲区对象的类型
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 
     // 将数据写入缓冲区对象
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
-    var a_Position = gl.getAttribLocation(gl.program, "a_Position");
-    if (a_Position < 0) {
-        console.log('获取 attribute 变量地址失败！');
-        return -2;
-    }
 
     // 将缓冲区对象分配给 a_Position 变量
     gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
