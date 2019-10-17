@@ -39,6 +39,8 @@ function initVertexBuffers(gl) {
     // 顶点数组
     var vertices = new Float32Array([0.0, 0.5, -0.5, -0.5, 0.5, -0.5]);
 
+    var FSIZE = vertices.BYTES_PER_ELEMENT;
+
     var n = 3;
 
     // 创建缓冲区对象
@@ -58,7 +60,7 @@ function initVertexBuffers(gl) {
     var a_Position = gl.getAttribLocation(gl.program, "a_Position");
 
     // 将缓冲区对象分配给 a_Position 变量
-    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, FSIZE * 2, 0);
 
     // 连接 a_Position 变量与分配给它的缓冲区对象
     gl.enableVertexAttribArray(a_Position);
